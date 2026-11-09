@@ -1,0 +1,19 @@
+cff-version: 1.2.0
+message: "If you use or adapt this activity, please credit Michael Banks and link to the license."
+title: "You Trained It. Now Beat It."
+type: software
+authors:
+  - family-names: Banks
+    given-names: Michael
+    website: "https://www.michaelbanks.org"
+version: 1.0.0
+date-released: 2026-11-09
+url: "https://github.com/mikebanks/you-trained-it-now-beat-it"
+repository-code: "https://github.com/mikebanks/you-trained-it-now-beat-it"
+license: CC-BY-NC-4.0
+abstract: "An offline AI and cybersecurity classroom activity about learning from labeled examples, shortcut failures, counterexamples, and verification through a trusted policy."
+keywords:
+  - AI literacy
+  - cybersecurity education
+  - decision trees
+  - high school

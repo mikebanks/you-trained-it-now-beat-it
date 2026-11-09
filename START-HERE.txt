@@ -1,0 +1,54 @@
+YOU TRAINED IT. NOW BEAT IT.
+A free classroom activity on artificial intelligence (AI) and cybersecurity
+Created by Michael Banks (michaelbanks.org) | Version 1.0, November 2026
+
+
+WHAT STUDENTS DO
+
+Students become the security team for a fictional school festival. They train
+a simple AI filter to sort event messages into LEGIT and SCAM, discover that it
+learned a shortcut, and retrain it with counterexamples. Then they become the
+red team and write fictional scams to beat it. A final message slips past the
+model, and a trusted policy catches it.
+
+
+AT A GLANCE
+
+Time:        40-minute activity, or a 75-minute session with discussion
+Group:       Designed for 20 students in five teams of four; adapts to
+             other class sizes
+Experience:  None required. No coding, student accounts, or internet.
+Equipment:   Paper and pens, or a laptop and projector for the offline demo
+
+
+WHAT IS IN THIS KIT
+
+1. facilitator-guide.pdf   Start here. Both equipment plans, a minute-by-minute
+                           run sheet, speaking prompts, printing instructions,
+                           the answer key, and adaptation notes.
+2. student-materials.pdf   Eight printable pages: trusted event sheet, message
+                           cards, rule worksheet, red-team template, team
+                           record, and voting ballots.
+3. activity.html           Offline classroom demo. Open it in a desktop web
+                           browser. It trains a small decision-tree model on
+                           the labeled messages and makes no network requests.
+4. facilitator-guide.md    Editable text of the facilitator guide.
+
+
+QUICK START
+
+1. Read facilitator-guide.pdf.
+2. Print student-materials.pdf using the printing instructions in the guide.
+3. If you have a projector, open activity.html once before class to rehearse.
+
+All messages, names, and codes in this kit are fictional practice material.
+
+
+USE AND SHARING
+
+This kit is shared under the Creative Commons Attribution-NonCommercial 4.0
+International License (CC BY-NC 4.0):
+https://creativecommons.org/licenses/by-nc/4.0/
+
+You may copy, print, adapt, and share it for non-commercial purposes. Credit
+Michael Banks, link to the license, and note any changes you make.

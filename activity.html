@@ -1,0 +1,272 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'unsafe-inline'; style-src 'unsafe-inline'; img-src data:; connect-src 'none'; form-action 'none'; base-uri 'none'">
+<title>You trained it. Now beat it. | CampusFest AI Lab</title>
+<style>
+:root { color-scheme:dark; --background:#111820; --foreground:#f5f7fa; --muted:#aebfce; --card:#1b2632; --secondary:#263747; --border:#405669; --primary:#94e8c4; --accent:#f6c673; --danger:#ffada8; --radius:16px; font-family:Arial,Helvetica,sans-serif; }
+* {box-sizing:border-box}
+body {margin:0; background:var(--background); color:var(--foreground)}
+header {padding:28px 5vw 20px; border-bottom:1px solid var(--border)}
+.eyebrow {font-size:13px; letter-spacing:2px; text-transform:uppercase; color:var(--primary); font-weight:700}
+h1 {margin:8px 0; font-size:clamp(24px,3.2vw,42px); line-height:1.1}
+.sub {color:var(--muted); margin:0; line-height:1.5}
+main {max-width:1450px; margin:auto; padding:28px 5vw 40px}
+button,textarea {font:inherit}
+button {cursor:pointer; border:1px solid var(--border); border-radius:9px; padding:12px 17px; background:var(--secondary); color:var(--foreground); font-weight:700; min-height:44px}
+button:hover:not(:disabled) {border-color:var(--primary)}
+button:disabled {opacity:.4;cursor:not-allowed}
+button:focus-visible,textarea:focus-visible {outline:3px solid var(--accent);outline-offset:3px}
+button.primary {background:var(--primary);color:#102a23;border-color:var(--primary)}
+.navigation {display:flex;gap:10px;align-items:center;flex-wrap:wrap;margin-bottom:20px}
+.navigation .phase {margin-right:auto;font-size:18px;font-weight:700;color:var(--primary)}
+.layout {display:grid;grid-template-columns:minmax(0,1.6fr) minmax(260px,1fr);gap:22px;align-items:start}
+.panel {background:var(--card);border:1px solid var(--border);border-radius:var(--radius);padding:25px}
+.message {font-size:clamp(25px,3vw,40px);line-height:1.35;margin:24px 0;min-height:135px}
+.prompt {font-size:19px;color:var(--accent);line-height:1.45}
+.actions {display:flex;gap:10px;flex-wrap:wrap}
+.result {font-size:21px;line-height:1.45;padding:14px 0 0;margin:0}
+.tag {display:inline-block;font-size:15px;font-weight:700;border:1px solid var(--border);border-radius:6px;padding:5px 9px;color:var(--muted)}
+.scam {color:var(--danger)}
+.legit {color:var(--primary)}
+.hidden {display:none!important}
+h2 {font-size:22px;margin:0 0 14px}
+h3 {font-size:18px; margin:20px 0 10px}
+.tree {font-size:18px;line-height:1.6}
+.tree ul {padding-left:22px}
+.tree li {margin:6px 0}
+.small {color:var(--muted);font-size:14px;line-height:1.5}
+.scores {font-size:17px;border-top:1px solid var(--border);padding-top:16px;margin-top:18px}
+.training {display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-top:20px}
+.training-card {border:1px solid var(--border);padding:14px;border-radius:10px;font-size:18px;line-height:1.4}
+.training-card .tag {margin-bottom:8px}
+textarea {width:100%;min-height:130px;background:#101923;color:var(--foreground);border:1px solid var(--border);border-radius:10px;padding:15px;font-size:24px;margin:15px 0}
+.counter {font-size:14px;color:var(--muted);margin-top:-8px;margin-bottom:15px}
+.policy {font-size:20px;line-height:1.45;border-left:3px solid var(--accent);padding-left:17px}
+.badge {font-size:13px;color:var(--muted)}
+details {margin-top:16px;color:var(--muted);font-size:15px;line-height:1.5}
+summary {cursor:pointer;padding:8px 0}
+footer {max-width:1450px;margin:auto;padding:0 5vw 25px;color:var(--muted);font-size:13px;line-height:1.5}
+@media(max-width:850px) {.layout{grid-template-columns:1fr}.training{grid-template-columns:1fr}.panel{padding:20px}.message{min-height:100px}header{padding-top:20px}}
+@media print {body{background:#fff;color:#000}button,.navigation{display:none}.panel{background:#fff;border-color:#aaa}.small,.sub{color:#333}}
+</style>
+</head>
+<body>
+<header>
+  <div class="eyebrow">CampusFest / AI + security lab</div>
+  <h1>You trained it. Now beat it.</h1>
+  <p class="sub">Train it. Test it. Try to beat it.</p>
+</header>
+<main>
+  <nav class="navigation" aria-label="Activity phases">
+    <span class="phase" id="phase-label"></span>
+    <button id="back">Previous phase</button>
+    <button id="next" class="primary">Next phase</button>
+    <button id="reset">Reset activity</button>
+  </nav>
+  <div class="layout">
+    <section class="panel" aria-label="Activity" id="stage"></section>
+    <aside class="panel">
+      <h2>The model's learned rule</h2>
+      <div id="rule" class="tree"></div>
+      <div class="scores" id="scores"></div>
+      <details><summary>How this model learns</summary>
+        <p>The designer gives it four word clues: URGENT, PASSWORD, PRACTICE ACCESS CODE, and GIFT CARD. The learner compares those clues against labeled examples and chooses the split that separates the labels best. It can make up to three splits along a path.</p>
+        <p>This is a real, small decision tree trained in your browser. It matches words, not meaning. It is not a chatbot or a production scam detector. Counts describe deliberately constructed classroom examples.</p>
+      </details>
+    </aside>
+  </div>
+</main>
+<footer>Fictional messages only. LEGIT is a label in this story, not proof of a sender's identity. This file has no network requests, accounts, or saved student data. Created by Michael Banks. Shared under CC BY-NC 4.0.</footer>
+<script id="activity-data" type="application/json">{"training": [{"id": "T1", "text": "CampusFest: The art club is running a free sticker table in the gym.", "label": "LEGIT"}, {"id": "T2", "text": "CampusFest: Volunteer check-in is at the library desk at 3:30.", "label": "LEGIT"}, {"id": "T3", "text": "CampusFest: The original music plan is 4:00 in the courtyard.", "label": "LEGIT"}, {"id": "T4", "text": "URGENT: Your prize expires. Reply with the practice access code to claim it.", "label": "SCAM"}, {"id": "T5", "text": "URGENT: Send your login password to keep your place at CampusFest.", "label": "SCAM"}, {"id": "T6", "text": "URGENT: Pay a gift-card fee to unlock your free event ticket.", "label": "SCAM"}], "test": [{"id": "A", "text": "CampusFest: Free stickers are available at the art-club table in the gym.", "label": "LEGIT", "reason": "The trusted event sheet confirms the free sticker table."}, {"id": "B", "text": "URGENT: Send your login password to reserve a free ticket.", "label": "SCAM", "reason": "Organizers never request login information."}, {"id": "C", "text": "URGENT: Rain has moved the music set to the gym. A volunteer will meet you at the courtyard entrance.", "label": "LEGIT", "reason": "The trusted event sheet confirms the rain relocation."}, {"id": "D", "text": "The event photo team needs your login password to add your picture.", "label": "SCAM", "reason": "Organizers never request login information."}, {"id": "E", "text": "URGENT: A water bottle was left at the library desk. Collect it before 3:45.", "label": "LEGIT", "reason": "The trusted event sheet confirms the lost-property notice."}, {"id": "F", "text": "You have a free event ticket. Send a gift card to activate it.", "label": "SCAM", "reason": "Organizers never request payment."}], "fresh": [{"id": "G", "text": "URGENT: The performer needs extra setup time. Music now starts at 4:15 in the gym.", "label": "LEGIT", "reason": "The trusted event sheet confirms the revised time and location."}, {"id": "H", "text": "The booth captain needs your practice access code to reserve a prize.", "label": "SCAM", "reason": "Organizers never request private codes."}, {"id": "J", "text": "Please send your password so the event team can save your photos.", "label": "SCAM", "reason": "Organizers never request login information."}, {"id": "K", "text": "URGENT: Bring a gift card to pay the fee for your free ticket.", "label": "SCAM", "reason": "Organizers never request payment."}], "boss": {"id": "BOSS", "text": "CampusFest photo desk: Send your school passphrase to unlock your free pictures.", "label": "SCAM", "reason": "A passphrase is login information. The trusted policy applies even when the message uses a different word."}, "features": [{"id": "urgent", "label": "URGENT", "phrase": "urgent"}, {"id": "password", "label": "PASSWORD", "phrase": "password"}, {"id": "practice_code", "label": "PRACTICE ACCESS CODE", "phrase": "practice access code"}, {"id": "gift_card", "label": "GIFT CARD", "phrase": "gift card"}]}</script>
+<script id="activity-engine">/* A real, deliberately small supervised decision-tree learner.
+   Features are selected by the designer; splits and labels are learned from data.
+   This is a classroom model, not a production phishing detector or a chatbot. */
+(function (root) {
+  "use strict";
+  const labels = ["LEGIT", "SCAM"];
+  function normalize(text) {
+    return String(text).toLowerCase().replace(/[-\u2010-\u2015]/g, " ").replace(/\s+/g, " ").trim();
+  }
+  function hasFeature(text, feature) {
+    const escaped = feature.phrase.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+    return new RegExp("\\b" + escaped + "\\b").test(normalize(text));
+  }
+  function entropy(rows) {
+    if (!rows.length) return 0;
+    return labels.reduce((total, label) => {
+      const p = rows.filter(row => row.label === label).length / rows.length;
+      return p ? total - p * Math.log2(p) : total;
+    }, 0);
+  }
+  function majority(rows) {
+    return rows.filter(row => row.label === "SCAM").length > rows.length / 2 ? "SCAM" : "LEGIT";
+  }
+  function train(rows, features, depth = 0, maxDepth = 3) {
+    if (!rows.length) throw new Error("Training requires labeled examples.");
+    const fallback = majority(rows);
+    if (!entropy(rows) || depth >= maxDepth || !features.length) {
+      return {label: fallback, samples: rows.length};
+    }
+    let best = null, bestGain = 0;
+    for (const feature of features) {
+      const yes = rows.filter(row => hasFeature(row.text, feature));
+      const no = rows.filter(row => !hasFeature(row.text, feature));
+      if (!yes.length || !no.length) continue;
+      const gain = entropy(rows) - yes.length / rows.length * entropy(yes) - no.length / rows.length * entropy(no);
+      // Quantize harmless floating-point noise so mathematical ties keep feature order.
+      const stableGain = Math.round(gain * 1e12) / 1e12;
+      if (stableGain > bestGain) {
+        bestGain = stableGain;
+        best = {feature, yes, no};
+      }
+    }
+    if (!best) return {label: fallback, samples: rows.length};
+    const remaining = features.filter(feature => feature.id !== best.feature.id);
+    return {
+      feature: best.feature,
+      gain: bestGain,
+      samples: rows.length,
+      yes: train(best.yes, remaining, depth + 1, maxDepth),
+      no: train(best.no, remaining, depth + 1, maxDepth)
+    };
+  }
+  function predict(tree, text) {
+    let node = tree;
+    while (!node.label) node = hasFeature(text, node.feature) ? node.yes : node.no;
+    return node.label;
+  }
+  function trace(tree, text) {
+    const steps = [];
+    let node = tree;
+    while (!node.label) {
+      const matched = hasFeature(text, node.feature);
+      steps.push({feature: node.feature.label, matched});
+      node = matched ? node.yes : node.no;
+    }
+    return {label: node.label, steps};
+  }
+  function score(tree, rows) {
+    return {correct: rows.filter(row => predict(tree, row.text) === row.label).length, total: rows.length};
+  }
+  root.ClassroomAI = Object.freeze({normalize, hasFeature, train, predict, trace, score});
+})(typeof globalThis === "undefined" ? this : globalThis);
+</script>
+<script>
+"use strict";
+const data = JSON.parse(document.getElementById("activity-data").textContent);
+const AI = ClassroomAI;
+const phases = ["Train", "Test", "Improve", "Fresh check", "Red-team swap", "Final reveal"];
+let phase = 0, index = 0, model = null, predictionVisible = false, truthVisible = false, improved = false;
+let revealedTest = new Set(), revealedFresh = new Set();
+let bossVisible = false, inputText = "", inputTested = false, policyVisible = false;
+const $ = id => document.getElementById(id);
+function escapeHtml(text) {
+  return String(text).replace(/[&<>"']/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
+}
+function labelHtml(label) { return '<strong class="' + (label === "SCAM" ? "scam" : "legit") + '">' + label + '</strong>'; }
+function treeHtml(tree) {
+  if (!tree) return '<p class="small">Train the model to reveal its learned rule.</p>';
+  if (tree.label) return labelHtml(tree.label);
+  return '<div>Contains <strong>' + escapeHtml(tree.feature.label) + '</strong>?<ul><li>YES: ' + treeHtml(tree.yes) + '</li><li>NO: ' + treeHtml(tree.no) + '</li></ul></div>';
+}
+function policyHtml() {
+  return '<h3>Trusted event policy</h3><p class="policy">CampusFest organizers never ask for login information, private codes or combinations, or payment. Check any request at the Info Desk in person.</p><p class="small">Use a channel you already know, independently of the message.</p>';
+}
+function draw() {
+  $("phase-label").textContent = (phase + 1) + " / 6 · " + phases[phase];
+  $("back").disabled = phase === 0;
+  $("next").disabled = phase === 5 || (phase === 0 && !model) ||
+    (phase === 1 && revealedTest.size !== data.test.length) || (phase === 2 && !improved) ||
+    (phase === 3 && revealedFresh.size !== data.fresh.length);
+  $("rule").innerHTML = treeHtml(model);
+  $("scores").innerHTML = model ? '<div>Training fit: <strong>' + AI.score(model, improved ? updatedTraining() : data.training).correct +
+    ' / ' + (improved ? 10 : 6) + '</strong></div>' : '<div>Training examples: 6 labeled messages</div>';
+  // Only display completed-round scores, after all labels have been revealed.
+  if (revealedTest.size === data.test.length) $("scores").innerHTML += '<div>Original model on A-F: <strong>2 / 6</strong></div>';
+  if (revealedFresh.size === data.fresh.length) $("scores").innerHTML += '<div>Improved model on G, H, J, K: <strong>4 / 4</strong></div>';
+  const stage = $("stage");
+  if (phase === 0) {
+    stage.innerHTML = '<span class="tag">TRAINING / labels provided</span><h2 style="margin-top:16px">Find a pattern. Teach a filter.</h2><p class="prompt">Which one of our four word clues separates these six labels?</p>' +
+      '<div class="actions"><button class="primary" id="train">' + (model ? 'Train again' : 'Train the model') + '</button></div>' +
+      '<div class="training">' + data.training.map(row => '<div class="training-card"><div class="tag">' + row.id + ' · ' +
+      row.label + '</div><div>' + escapeHtml(row.text) + '</div></div>').join("") + '</div>';
+    $("train").onclick = () => { model = AI.train(data.training, data.features); improved = false; draw(); };
+  } else if (phase === 1 || phase === 3) {
+    drawCards(phase === 1 ? data.test : data.fresh);
+  } else if (phase === 2) {
+    stage.innerHTML = '<span class="tag">LEARN FROM THE FAILURES</span><h2 style="margin-top:16px">Give it counterexamples.</h2>' +
+      '<p class="message">Add C, D, E, and F to the training examples. What rule will it learn now?</p>' +
+      '<p class="prompt">Discuss first. Rotate your team roles once.</p><button class="primary" id="retrain">Retrain with the 4 counterexamples</button>' +
+      (improved ? '<p class="result">The new tree uses several clues. Test it on four fresh messages next.</p>' : '');
+    $("retrain").onclick = () => {model = AI.train(updatedTraining(), data.features); improved = true; draw();};
+  } else if (phase === 4) {
+    stage.innerHTML = '<span class="tag">RED TEAM / test the improved model</span><h2 style="margin-top:16px">Can your team beat it?</h2>' +
+      '<p class="prompt">Write a fictional CampusFest message under 25 words. Swap with the next team. Everyone votes before testing.</p>' +
+      '<p class="small">Template: From: [fictional role]. Hook: [prize or event]. Ask: [login information, a private code or combination, or payment].</p>' +
+      '<label for="live-message">Your fictional message</label><textarea id="live-message" maxlength="400" placeholder="From: CampusFest booth. Hook: Free prize. Ask: ..."></textarea>' +
+      '<div id="word-count" class="counter"></div><div class="actions"><button class="primary" id="live-test">Test the message</button><button id="show-policy">Show trusted policy</button></div>' +
+      '<div id="live-result" aria-live="polite"></div><div id="policy" class="' + (policyVisible ? '' : 'hidden') + '">' + policyHtml() + '</div>';
+    $("live-message").value = inputText;
+    $("live-message").oninput = () => {inputText = $("live-message").value; inputTested = false; $("live-result").replaceChildren(); updateWordCount();};
+    $("live-test").onclick = () => {inputTested = true; drawLiveResult();};
+    $("show-policy").onclick = () => {policyVisible = !policyVisible; $("policy").classList.toggle("hidden", !policyVisible);};
+    updateWordCount();
+    if (inputTested) drawLiveResult();
+  } else {
+    stage.innerHTML = '<span class="tag">BOSS / a new kind of clue</span><h2 style="margin-top:16px">One final message.</h2>' +
+      '<p class="message">' + escapeHtml(data.boss.text) + '</p><p class="prompt">Everyone votes. What will the model say? What does the trusted policy say?</p>' +
+      '<button class="primary" id="boss">Reveal both decisions</button>' +
+      (bossVisible ? '<p class="result">Model prediction: ' + labelHtml(AI.predict(model, data.boss.text)) +
+      '<br>Story label: ' + labelHtml(data.boss.label) + '</p><p>' + escapeHtml(data.boss.reason) +
+      '</p>' + policyHtml() + '<p class="prompt">It learned a pattern. A trusted check catches what the pattern misses.</p>' : '');
+    $("boss").onclick = () => {bossVisible = true;draw();};
+  }
+}
+function updatedTraining() {return data.training.concat(data.test.filter(row => ["C","D","E","F"].includes(row.id)));}
+function drawCards(rows) {
+  const row = rows[index], outcome = AI.predict(model, row.text);
+  $("stage").innerHTML = '<span class="tag">' + row.id + ' · message ' + (index+1) + ' of ' + rows.length + '</span>' +
+    '<p class="message">' + escapeHtml(row.text) + '</p><p class="prompt">Vote first: LEGIT or SCAM? Give your reason.</p>' +
+    '<div class="actions"><button id="prediction" class="primary">Show model prediction</button>' +
+    '<button id="truth"' + (!predictionVisible ? ' disabled' : '') + '>Reveal story label</button></div>' +
+    (predictionVisible ? '<p class="result">Model prediction: ' + labelHtml(outcome) + '</p>' : '') +
+    (truthVisible ? '<p class="result">Story label: ' + labelHtml(row.label) + ' · ' + (outcome === row.label ? 'Model got this right.' : 'Model missed this one.') +
+    '</p><p>' + escapeHtml(row.reason) + '</p>' : '') +
+    '<div class="actions" style="margin-top:24px"><button id="previous-card"' + (index === 0 ? ' disabled' : '') + '>Previous message</button>' +
+    '<button id="next-card"' + (!truthVisible || index === rows.length-1 ? ' disabled' : '') + '>Next message</button></div>' +
+    (truthVisible && index === rows.length-1 ? '<p class="prompt">' + (phase === 1 ? 'Urgency is a warning sign. It is not proof. Move to Improve.' : 'Four correct answers. Is the model ready for your red team?') + '</p>' : '');
+  $("prediction").onclick = () => {predictionVisible = true;draw();};
+  $("truth").onclick = () => {truthVisible = true;(phase === 1 ? revealedTest : revealedFresh).add(row.id);draw();};
+  $("previous-card").onclick = () => {index--;resetReveal();draw();};
+  $("next-card").onclick = () => {index++;resetReveal();draw();};
+}
+function updateWordCount() {
+  const words = inputText.trim() ? inputText.trim().split(/\s+/).length : 0;
+  $("word-count").textContent = words + " words / maximum 24";
+  $("live-test").disabled = words === 0 || words > 24;
+}
+function drawLiveResult() {
+  const result = AI.trace(model,inputText);
+  $("live-result").innerHTML = '<p class="result">Model prediction: ' + labelHtml(result.label) + '</p>' +
+    '<p class="small">Checked: ' + result.steps.map(step => escapeHtml(step.feature) + ' ' + (step.matched ? 'YES' : 'NO')).join(' → ') +
+    '. Compare the request with the policy; the demo does not assign a true label to your message.</p>';
+}
+function resetReveal() {predictionVisible = false;truthVisible = false;}
+$("next").onclick = () => {if (!$("next").disabled) {phase++;index=0;resetReveal();draw();}};
+$("back").onclick = () => {
+  if (phase === 0) return;
+  phase--;index=0;resetReveal();
+  if (phase <= 2) {model = AI.train(data.training,data.features);improved=false;revealedFresh.clear();}
+  draw();
+};
+$("reset").onclick = () => {
+  phase=0;index=0;model=null;improved=false;revealedTest.clear();revealedFresh.clear();
+  bossVisible=false;inputText="";inputTested=false;policyVisible=false;resetReveal();draw();
+};
+draw();
+</script>
+</body>
+</html>
